@@ -14,6 +14,8 @@ abstract class AbstractRequest
 
     private $merchant;
 
+    private $certificate;
+
     /**
      * AbstractSaleRequest constructor.
      *
@@ -30,6 +32,17 @@ abstract class AbstractRequest
      * @return mixed
      */
     public abstract function execute($param);
+
+    /**
+     * @param string $certificate
+     *
+     * @return $this
+     */
+    public function setCertificate($certificate)
+    {
+        $this->certificate = $certificate;
+        return $this;
+    }
 
     /**
      * @param                        $method
@@ -77,6 +90,9 @@ abstract class AbstractRequest
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        if (!is_null($this->certificado)) {
+            curl_setopt($curl, CURLOPT_CAINFO, $this->certificado);
+        }
 
         $response   = curl_exec($curl);
         $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
